@@ -1,0 +1,7 @@
+.check {
+  color: green;
+  display: none;
+}
+.checkBox:hover .check {
+  display: block;
+}

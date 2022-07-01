@@ -1,28 +1,76 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import CompleteTask from './CompleteTask';
+import TaskRow from './TaskRow';
 
 const Home = () => {
+
+    const [task, setTask] = useState([]);
+    const [reload, setIsReload] = useState(true);
+
     const addTask = e => {
         if (e.keyCode === 13) {
             e.preventDefault();
+            const taskName = e.target.value;
+            const status = 'incomplete';
+            const url = "http://localhost:5000/task";
+            fetch(url, {
+                method: "POST",
+                body: JSON.stringify({ taskName, status }),
+                headers: {
+                    'Content-type': 'application/json; charset=UTF-8',
+                },
+            })
 
-            console.log('enter');
-            const task = e.target.value;
-            console.log(task);
+                .then((res) => res.json())
+                .then((data) => {
+                    if (data.insertedId) {
+                        setIsReload(!reload)
+                    }
+
+                })
+
         }
-
-
     }
+
+
+    useEffect(() => {
+        const url = 'http://localhost:5000/task';
+        fetch(url, {
+            method: "GET",
+            headers: {
+                'content-type': 'application/json'
+            },
+        })
+            .then(res => res.json())
+            .then(data =>
+                setTask(data));
+    }, [reload])
+
+
+
     return (
-        <div className='min-h-[90vh] bg-slate-200'>
-            {/* <h1>Welcome to Task Manager</h1> */}
-            <div className='mx-8 pt-10'>
+        <div className='min-h-[90vh] bg-slate-200 flex justify-center'>
+            <div className='mx-8 pt-10 lg:w-[30%]'>
                 <form>
-                    <div className='flex items-center gap-2'>
-                        <div className='border border-primary w-5 h-5 rounded-full'></div>
-                        <input onKeyDown={(e) => addTask(e)} className='border border-b-primary w-full py-2 pl-2 focus:outline-none focus:border-b-orange-500' type="text" name="task" id="task" autoComplete='off' placeholder='Add Task' />
+                    <div className='flex items-center gap-5 pl-2'>
+                        <div className='text-3xl text-primary font-bold'>+</div>
+                        <input onKeyDown={(e) => addTask(e)} className='border border-b-primary w-full py-2 pl-2 focus:outline-none focus:border-b-orange-500' type="text" name="taskName" id="task" autoComplete='off' placeholder='Add Task' />
                     </div>
                 </form>
+
+                <div className='mt-3 bg-slate-50'>
+                    {
+                        task.length === 0 ? '' : task.map(task => <TaskRow key={task._id} reload={reload} setIsReload={setIsReload} task={task} />)
+                    }
+                </div>
+                <div className='mt-3 bg-slate-50'>
+                    <h1 className='text-success mt-3 font-medium text-2xl'>Completed Task</h1>
+                    {
+                        task.length === 0 ? '' : task.map(task => <CompleteTask key={task._id} reload={reload} setIsReload={setIsReload} task={task} />)
+                    }
+                </div>
             </div>
+
         </div>
     );
 };

@@ -1,5 +1,6 @@
 import { Route, Routes } from "react-router-dom";
-import CompletedTasks from "./components/CompletedTasks/CompletedTasks";
+import AllCompletedTasks from "./components/AllCompletedTasks/AllCompletedTasks";
+
 import Footer from "./components/Footer/Footer";
 import Home from "./components/Home/Home";
 import MyCalender from "./components/MyCalendar/MyCalender";
@@ -14,7 +15,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/home" element={<Home />} />
         <Route path="/todo" element={<ToDo />} />
-        <Route path="/completedTasks" element={<CompletedTasks />} />
+        <Route path="/completedTasks" element={<AllCompletedTasks />} />
         <Route path="/calender" element={<MyCalender />} />
       </Routes>
       <Footer />
